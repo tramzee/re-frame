@@ -1,13 +1,23 @@
 (ns todomvc.core
-  (:require-macros [secretary.core :refer [defroute]])
+  (:require-macros [secretary.core :refer [defroute]]
+                   [re-frame.tracing :refer [with-trace]])
   (:require [goog.events :as events]
             [reagent.core :as reagent]
-            [re-frame.core :refer [dispatch dispatch-sync]]
+            [re-frame.core :as rf :refer [dispatch dispatch-sync]]
+            [re-frame.tracing :as trace :include-macros true]
+            [re-frisk.core :as re-frisk]
             [secretary.core :as secretary]
             [todomvc.events]
             [todomvc.subs]
             [todomvc.views]
-            [devtools.core :as devtools])
+            [reagent.impl.component :as component]
+            [devtools.core :as devtools]
+            [reagent.impl.util :as util]
+            [clojure.string :as str]
+            [reagent.impl.batching :as batch]
+            [reagent.ratom :as ratom]
+            [reagent.interop :refer-macros [$ $!]]
+            [goog.object :as gob])
   (:import [goog History]
            [goog.history EventType]))
 
@@ -18,21 +28,42 @@
 
 ;; -- Routes and History ------------------------------------------------------
 
-(defroute "/" [] (dispatch [:set-showing :all]))
-(defroute "/:filter" [filter] (dispatch [:set-showing (keyword filter)]))
+(defn init-routes []
+  (defroute "/" [] (dispatch [:set-showing :all]))
+  (defroute "/:filter" [filter] (dispatch [:set-showing (keyword filter)]))
+  )
 
-(def history
-  (doto (History.)
-    (events/listen EventType.NAVIGATE
-                   (fn [event] (secretary/dispatch! (.-token event))))
-    (.setEnabled true)))
+(defonce history
+         (doto (History.)
+           (events/listen EventType.NAVIGATE
+                          (fn [event] (secretary/dispatch! (.-token event))))
+           (.setEnabled true)))
 
 
 ;; -- Entry Point -------------------------------------------------------------
 
+(defn nothing []
+  [:div])
+
+(defn wrapper []
+  (let [showing? (reagent/atom true)]
+    (fn []
+      [:div
+       [:div {:on-click #(swap! showing? not)} "Click"]
+       (if @showing?
+         [todomvc.views/todo-app]
+         [nothing])
+       [todomvc.views/devtools]])))
+
+(defn render []
+  (rf/clear-subscription-cache!)
+  (reagent/render [wrapper]
+                  (.getElementById js/document "app")))
+
 (defn ^:export main
   []
+  (day8.re-frame.trace/init-tracing!)
+  (init-routes)
   (dispatch-sync [:initialise-db])
-  (reagent/render [todomvc.views/todo-app]
-                  (.getElementById js/document "app")))
+  (render))
 

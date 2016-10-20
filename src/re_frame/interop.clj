@@ -1,5 +1,6 @@
 (ns re-frame.interop
-  (:import [java.util.concurrent Executor Executors]))
+  (:import [java.util.concurrent Executor Executors]
+           (java.util Date)))
 
 
 ;; The purpose of this file is to provide JVM-runnable implementations of the
@@ -71,3 +72,6 @@
   there isn't often much point firing a timed event in a test."
   [f ms]
   (next-tick f))
+
+(defn now []
+  (System/currentTimeMillis))

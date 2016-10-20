@@ -4,6 +4,33 @@
     <meta charset="utf-8">
     <title>Reframe Todomvc</title>
     <link rel="stylesheet" href="todos.css">
+      <style>
+
+          .links line {
+              stroke: #999;
+              stroke-opacity: 0.6;
+          }
+
+          .node circle {
+              stroke: #fff;
+              stroke-width: 1.5px;
+          }
+
+          .node text {
+              display: none;
+              font: 10px sans-serif;
+          }
+
+          .node:hover circle {
+              /*fill: #000;*/
+              opacity: 0.5;
+          }
+
+          .node:hover text {
+              display: inline;
+          }
+
+      </style>
   </head>
   <body>
     <div id="app">

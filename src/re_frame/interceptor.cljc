@@ -105,6 +105,11 @@
                       (invoke-interceptor-fn interceptor direction)))))))))
 
 
+;; Added to outer tracing context
+#_(with-trace {:trace     :interceptor-fn
+               :direction direction}
+              (invoke-interceptor-fn interceptor direction))
+
 (defn enqueue
   "Add a collection of `interceptors` to the end of `context's` execution `:queue`.
   Returns the updated `context`.

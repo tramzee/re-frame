@@ -1,5 +1,5 @@
 (ns todomvc.views
-  (:require [reagent.core  :as reagent]
+  (:require [reagent.core :as reagent]
             [re-frame.core :refer [subscribe dispatch]]))
 
 
@@ -46,24 +46,23 @@
              :on-save #(dispatch [:save id %])
              :on-stop #(reset! editing false)}])])))
 
-
 (defn task-list
   []
   (let [visible-todos (subscribe [:visible-todos])
-        all-complete? (subscribe [:all-complete?])]
+        all-complete? (subscribe [:all-complete?])
+        dfn           #(dispatch [:complete-all-toggle (not @all-complete?)])]
     (fn []
       [:section#main
         [:input#toggle-all
           {:type "checkbox"
            :checked @all-complete?
-           :on-change #(dispatch [:complete-all-toggle (not @all-complete?)])}]
+           :on-change dfn}]
         [:label
           {:for "toggle-all"}
           "Mark all as complete"]
         [:ul#todo-list
           (for [todo  @visible-todos]
             ^{:key (:id todo)} [todo-item todo])]])))
-
 
 (defn footer-controls
   []
@@ -86,7 +85,6 @@
             [:button#clear-completed {:on-click #(dispatch [:clear-completed])}
               "Clear completed"])]))))
 
-
 (defn task-entry
   []
   [:header#header
@@ -96,16 +94,17 @@
        :placeholder "What needs to be done?"
        :on-save #(dispatch [:add-todo %])}]])
 
-
 (defn todo-app
   []
   (let [todos  (subscribe [:todos])]
     (fn []
       [:div
+       [:div
         [:section#todoapp
-          [task-entry]
-          (when (seq @todos)
-            [task-list])
-          [footer-controls]]
+         [task-entry]
+         (when (seq @todos)
+           [task-list])
+         [footer-controls]]
         [:footer#info
-          [:p "Double-click to edit a todo"]]])))
+         [:p "Double-click to edit a todo"]]]
+       ])))

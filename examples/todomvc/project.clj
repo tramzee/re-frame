@@ -2,7 +2,7 @@
   :dependencies [[org.clojure/clojure        "1.8.0"]
                  [org.clojure/clojurescript  "1.9.89"]
                  [reagent "0.6.0-rc"]
-                 [re-frame "0.8.0"]
+                 [re-frame "0.8.1-SNAPSHOT"]
                  [binaryage/devtools "0.8.1"]
                  [secretary "1.2.3"]]
 
@@ -12,20 +12,23 @@
   :hooks [leiningen.cljsbuild]
 
   :profiles {:dev  {:cljsbuild
-                    {:builds {:client {:compiler {:asset-path           "js"
+                    {:builds {:client {:source-paths ["src" "../../src"]
+                                       :compiler {:asset-path           "js"
                                                   :optimizations        :none
                                                   :source-map           true
+                                                  :preloads             [dirac.runtime.preload]
                                                   :source-map-timestamp true
-                                                  :main                 "todomvc.core"}
-                                       :figwheel {:on-jsload "todomvc.core/main"}}}}}
+                                                  :main                 "todomvc.core"
+                                                  :external-config      {:re-frisk {:enabled true}}}
+                                       :figwheel {:on-jsload "todomvc.core/render"}}}}}
 
              :prod {:cljsbuild
                     {:builds {:client {:compiler {:optimizations :advanced
                                                   :elide-asserts true
                                                   :pretty-print  false}}}}}}
 
-  :figwheel {:server-port 3450
-             :repl        true}
+  :figwheel {:server-port 3451
+             :repl        false}
 
 
   :clean-targets ^{:protect false} ["resources/public/js" "target"]

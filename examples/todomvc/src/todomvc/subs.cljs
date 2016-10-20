@@ -8,7 +8,7 @@
   :showing
   (fn [db _]        ;; db is the value in app-db
     (:showing db))) ;; I repeat:  db is a value. Not a ratom.  And this fn does not return a reaction, just a value.
-
+;
 ;; so that `fn` is a pure function
 
 ;; Next, the registration of a similar handler is done in two steps.
@@ -127,6 +127,9 @@
       (filter filter-fn todos))))
 
 
+
+
+
 (reg-sub
   :all-complete?
   :<- [:todos]
@@ -144,4 +147,7 @@
   :<- [:todos]
   :<- [:completed-count]
   (fn [[todos completed] _]
-    [(- (count todos) completed) completed]))
+    [(- (count todos) completed) completed]
+    ))
+
+

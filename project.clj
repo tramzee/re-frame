@@ -13,7 +13,7 @@
                      :plugins      [[lein-ancient              "0.6.10"]
                                     [lein-cljsbuild            "1.1.4"]
                                     [lein-npm                  "0.6.2"]
-                                    [lein-figwheel             "0.5.6"]
+                                    #_[lein-figwheel             "0.5.6"]
                                     [lein-shell                "0.5.0"]]}}
 
   :clean-targets  [:target-path "run/compiled"]
@@ -49,11 +49,18 @@
                         :compiler     {:preloads        [devtools.preload]
                                        :external-config {:devtools/config {:features-to-install [:formatters :hints]}}
                                        :output-to     "run/compiled/browser/test.js"
-                                       :source-map    true
-                                       :output-dir    "run/compiled/browser/test"
-                                       :optimizations :none
+                                       :source-map           true
+                                       :output-dir           "run/compiled/browser/test"
+                                       :optimizations        :none
                                        :source-map-timestamp true
-                                       :pretty-print  true}}
+                                       :pretty-print         true}}
+                       {:id           "prod"
+                        :source-paths ["src"]
+                        :compiler     {:output-to       "run/compiled/prod/test.js"
+                                       :output-dir      "run/compiled/prod/test"
+                                       :main            "re-frame.core"
+                                       :closure-defines {"goog.DEBUG" false}
+                                       :optimizations   :advanced}}
                        {:id           "karma"
                         :source-paths ["test" "src"]
                         :compiler     {:output-to     "run/compiled/karma/test.js"
