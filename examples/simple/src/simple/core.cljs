@@ -86,3 +86,19 @@
   (rf/dispatch-sync [:initialize])     ;; puts a value into application state
   (reagent/render [ui]              ;; mount the application's ui into '<div id="app" />'
                   (js/document.getElementById "app")))
+
+
+;; -- Cary Example ------------------------------------------------------------
+
+(def latest-items [:items :latest])
+
+(rf/reg-sub
+  :latest-items
+  (fn [db _]
+    (get-in db latest-items)))
+
+
+(rf/reg-event-db
+ :add-item
+ (fn [db [_ new-item]]
+   (update-in db latest-items conj new-item)))

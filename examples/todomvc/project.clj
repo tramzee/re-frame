@@ -18,8 +18,11 @@
                                                   :source-map           true
                                                   :source-map-timestamp true
                                                   :main                 "todomvc.core"}
-                                       :figwheel {:on-jsload "todomvc.core/main"}}}}}
-
+                                       :figwheel {:on-jsload "todomvc.core/main"}}}}
+                    :dependencies [[figwheel-sidecar "0.5.10"]
+                                   [com.cemerick/piggieback "0.2.2"]]
+                    :source-paths ["src" "dev" "../../src"]
+                    :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}
              :prod {:cljsbuild
                     {:builds {:client {:compiler {:optimizations :advanced
                                                   :elide-asserts true
